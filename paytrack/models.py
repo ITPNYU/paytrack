@@ -9,7 +9,7 @@ class Account(Base):
     id = Column(Integer, primary_key=True, nullable=False)
     name = Column(String(30), nullable=False, unique=True)
     enabled = Column(Boolean, default=True, nullable=False)
-    paygate_form = Column(Integer, nullable=True)
+    paygate_form = Column(String(20), nullable=True)
     created_at = Column(DateTime, nullable=False, default=func.now())
     modified_at = Column(DateTime, nullable=False, default=func.now())
 

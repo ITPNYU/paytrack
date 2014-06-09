@@ -1,5 +1,6 @@
+from datetime import datetime
 from sqlalchemy import Boolean, Column, DateTime, Enum, Float, ForeignKey, Integer, String, Text
-from sqlalchemy.orm import backref, relationship
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from paytrack.database import Base
 
@@ -19,7 +20,7 @@ class Account(Base):
 class Credit(Base):
     __tablename__ = 'credit'
     id = Column(Integer, primary_key=True, nullable=False)
-    status = Column(Enum('requested', 'approved', 'rejected'), nullable=False)
+    status = Column(Enum('requested', 'approved', 'rejected', 'used'), nullable=False)
     amount = Column(Float, nullable=False)
     credit_type = Column(Enum('discount', 'barter'), nullable=False)
     payer_id = Column(Integer, ForeignKey('payer.id'), nullable=False)
@@ -46,6 +47,7 @@ class Invoice(Base):
     payer = relationship('Payer')
     account_id = Column(Integer, ForeignKey('account.id'), nullable=False)
     account = relationship('Account')
+    code = Column(String(50), nullable=False, unique=True, default=func.uuid())
     expires_at = Column(DateTime, nullable=True)
     note = Column(Text, nullable=True)
     created_at = Column(DateTime, nullable=False, default=func.now())
@@ -69,6 +71,21 @@ class Payer(Base):
 
     def __repr__(self):
         return '<Payer %r>' % (self.email)
+    
+    # helper method to add the payment-due calculation to the data model
+    def payments_due(self):
+        payments_due = []
+        for i in self.invoices:
+            if i.status == 'sent' and i.paid == False:
+                amount = i.amount
+                for c in self.credits:
+                    if c.expires_at is not None:
+                        if datetime.now() > c.expires_at:
+                            continue
+                    if c.account_id == i.account_id and c.status == 'approved':
+                        amount = amount - c.amount
+                payments_due.append({'account_id': i.account_id, 'amount': amount})
+        return payments_due
 
 class Payment(Base):
     __tablename__ = 'payment'
@@ -84,6 +101,7 @@ class Payment(Base):
     payment_type = Column(Enum('paygate', 'creditcard', 'check', 'cash'), nullable=False)
     reviewer_id = Column(Integer, ForeignKey('user.id'), nullable=True)
     reviewer = relationship('User')
+    note = Column(Text, nullable=True)
     trans_decision = Column(String(25), nullable=True)
     trans_reference = Column(String(25), nullable=True)
     trans_id = Column(String(25), nullable=True)

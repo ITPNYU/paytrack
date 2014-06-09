@@ -24,7 +24,7 @@ manager = APIManager(app, session=db_session, preprocessors=dict(GET_SINGLE=[aut
 account_blueprint = manager.create_api(Account, methods=['GET', 'DELETE', 'PATCH', 'POST'], collection_name='account', url_prefix='/v1')
 credit_blueprint = manager.create_api(Credit, methods=['GET', 'DELETE', 'PATCH', 'POST'], collection_name='credit', url_prefix='/v1')
 invoice_blueprint = manager.create_api(Invoice, methods=['GET', 'DELETE', 'PATCH', 'POST'], collection_name='invoice', url_prefix='/v1')
-payer_blueprint = manager.create_api(Payer, methods=['GET', 'DELETE', 'PATCH', 'POST'], collection_name='payer', url_prefix='/v1')
+payer_blueprint = manager.create_api(Payer, methods=['GET', 'DELETE', 'PATCH', 'POST'], collection_name='payer', url_prefix='/v1', include_methods = ['payments_due'])
 payment_blueprint = manager.create_api(Payment, methods=['GET', 'POST'], collection_name='payment', url_prefix='/v1')
 refund_blueprint = manager.create_api(Refund, methods=['GET', 'DELETE', 'PATCH', 'POST'], collection_name='refund', url_prefix='/v1')
 

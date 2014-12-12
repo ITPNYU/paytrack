@@ -21,12 +21,12 @@ def add_cors_header(response):
 # Flask-Restless API endpoints
 # note: GET preprocessors pulled in via paytrack.authn.auth_func
 manager = APIManager(app, session=db_session, preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
-account_blueprint = manager.create_api(Account, methods=['GET', 'DELETE', 'PATCH', 'POST', 'PUT'], collection_name='account', url_prefix='/v1', max_results_per_page=300)
-credit_blueprint = manager.create_api(Credit, methods=['GET', 'DELETE', 'PATCH', 'POST', 'PUT'], collection_name='credit', url_prefix='/v1', max_results_per_page=300)
-invoice_blueprint = manager.create_api(Invoice, methods=['GET', 'DELETE', 'PATCH', 'POST', 'PUT'], collection_name='invoice', url_prefix='/v1', include_methods = ['payer.payments_due'], max_results_per_page=300)
-payer_blueprint = manager.create_api(Payer, methods=['GET', 'DELETE', 'PATCH', 'POST', 'PUT'], collection_name='payer', url_prefix='/v1', include_methods = ['payments_due'], max_results_per_page=300)
-payment_blueprint = manager.create_api(Payment, methods=['GET', 'POST'], collection_name='payment', url_prefix='/v1', max_results_per_page=300)
-refund_blueprint = manager.create_api(Refund, methods=['GET', 'DELETE', 'PATCH', 'POST', 'PUT'], collection_name='refund', url_prefix='/v1', max_results_per_page=300)
+account_blueprint = manager.create_api(Account, methods=['GET', 'DELETE', 'PATCH', 'POST', 'PUT'], collection_name='account', url_prefix='/v1', max_results_per_page=600)
+credit_blueprint = manager.create_api(Credit, methods=['GET', 'DELETE', 'PATCH', 'POST', 'PUT'], collection_name='credit', url_prefix='/v1', max_results_per_page=600)
+invoice_blueprint = manager.create_api(Invoice, methods=['GET', 'DELETE', 'PATCH', 'POST', 'PUT'], collection_name='invoice', url_prefix='/v1', include_methods = ['payer.payments_due'], max_results_per_page=600)
+payer_blueprint = manager.create_api(Payer, methods=['GET', 'DELETE', 'PATCH', 'POST', 'PUT'], collection_name='payer', url_prefix='/v1', include_methods = ['payments_due'], max_results_per_page=600)
+payment_blueprint = manager.create_api(Payment, methods=['GET', 'POST'], collection_name='payment', url_prefix='/v1', max_results_per_page=600)
+refund_blueprint = manager.create_api(Refund, methods=['GET', 'DELETE', 'PATCH', 'POST', 'PUT'], collection_name='refund', url_prefix='/v1', max_results_per_page=600)
 
 app.after_request(add_cors_header)
 
